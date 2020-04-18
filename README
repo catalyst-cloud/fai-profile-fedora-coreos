@@ -1,4 +1,4 @@
-FAI Config directory structure to install Fedora CoreOS.
+FAI profile directory structure to install Fedora CoreOS.
 
 FAI is the Fully Automatic Installer.  See https://fai-project.org .
 
@@ -7,7 +7,7 @@ boot method. You don't need to download an initrd that is over 600MB,
 you can have a locally cached copy of the install image and you can easily
 setup complicated disk configurations.
 
-You need to add a couple of coreos-installer, see bin/README.
+You need to add a copy of coreos-installer, see bin/README.
 
 You need to place your Ignition file(s) in etc as $hostname.ign . If
 the install device is not /dev/sda then add a class/$hostname.var file
@@ -16,7 +16,7 @@ setting INSTALL_DEVICE .
 There are sample files in etc, class and disk_config for my-servers-hostname.
 
 You may want to download a local copy of the install image, you can do
-so by running the follow in the basefiles directory of this FAI config:
+so by running the following in the basefiles directory of this FAI profile:
 
   cd basefiles && bin/coreos-installer download
 
