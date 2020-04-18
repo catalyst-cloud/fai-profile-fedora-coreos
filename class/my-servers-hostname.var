@@ -1,0 +1,2 @@
+# Which device should CoreOS be installed to?
+INSTALL_DEVICE=/dev/sdg

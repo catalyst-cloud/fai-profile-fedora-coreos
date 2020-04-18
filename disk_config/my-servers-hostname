@@ -1,0 +1,29 @@
+# SSD drives - for data
+disk_config sda disklabel:gpt
+
+primary  -    10G-          -    -
+primary  -    128M          -    -
+
+disk_config sdb sameas:sda
+disk_config sdc sameas:sda
+disk_config sdd sameas:sda
+
+# Spinning rust - for backups
+disk_config sdd disklabel:gpt
+primary  -    10G-          -    -
+primary  -    128M          -    -
+
+disk_config sde sameas:sdd
+
+# coreos-installer will actually replace these partitions.
+disk_config sdg disklabel:gpt bootable:1
+
+primary  -   384M   - -
+primary  -   127M   - -
+primary  -     1M   - -
+primary  /     1G  ext4 rw
+
+disk_config raid
+
+raid1   /opt/backup1  sdd1,sde1            ext4  rw,errors=remount-ro  mdcreateopts="--homehost=any"  createopts="-L backup1 -m 0"
+raid10  /opt/ssd1     sda1,sdb1,sdc1,sdd1  ext4  rw,errors=remount-ro  mdcreateopts="--homehost=any"  createopts="-L ssd1 -m 0"

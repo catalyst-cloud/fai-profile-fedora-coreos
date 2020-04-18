@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# None of these tasks make sense for CoreOS.
+
+task_mountdisks() {
+    echo skip task_mountdisks
+}
+
+task_extrbase() {
+    echo skip task_extrbase
+}
+
+task_debconf() {
+    echo skip task_debconf
+}
+
+task_repository() {
+    echo skip task_repository
+}
+
+task_updatebase() {
+    echo skip task_updatebase
+}
+
+task_instsoft() {
+    echo skip task_instsoft
+}
+

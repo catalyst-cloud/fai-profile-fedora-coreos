@@ -1,0 +1,4 @@
+bin/coreos-installer
+etc/*.ign
+basefiles/*.xz
+basefiles/*.sig

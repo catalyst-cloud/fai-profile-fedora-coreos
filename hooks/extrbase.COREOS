@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Fetch the latest stable image by running:
+#   bin/coreos-installer download
+# This isn't necessary, but speeds up the process if you're installing
+# over and over and over.
+if compgen -G "$FAI/basefiles/fedora-coreos*xz" > /dev/null; then
+    EXTRA="-f $(ls $FAI/basefiles/fedora-coreos*xz | sort -r | head -1)"
+fi
+
+$FAI/bin/coreos-installer install $INSTALL_DEVICE --ignition-file $IGNITION_FILE $EXTRA

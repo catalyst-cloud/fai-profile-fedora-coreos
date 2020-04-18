@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# hooks/partition.WIPEDISKS
+#
+# author : W. Walkowiak, 2013-01-03
+# changed: 
+#   changed a number of times over the years by Andrew Ruthven to support
+#   newer versions of Debian and handle various issues we've encountered.
+#
+# Stop LVM an MD RAIDs if existing and wipe all disks with wipefs and dd
+#
+# $Id: $
+#===========================================================================
+
+error=0; trap 'error=$(($?>$error?$?:$error))' ERR # save maximum error code
+
+#--- functions
+
+#----
+
+if [ -f /sbin/mdadm-startall ]
+then
+  mdadm-startall
+else
+  mdadm --assemble --scan || true
+fi
+
+# Make sure that lvmetad isn't used, otherwise vgchange will
+# refuse to run.
+sed -i 's/use_lvmetad = 1/use_lvmetad = 0/' /etc/lvm/lvm.conf
+
+# stop volume groups
+echo "VGs present:"
+vgs 
+echo "Stopping the VGs (if present):"
+vgchange -an
+
+# stop MD RAID arrays
+echo "Stopping and removing MD RAID arrays:"
+mdadm --detail --scan 
+for array in $(mdadm --detail --scan | cut -d ' ' -f 2 | xargs -n1 --no-run-if-empty readlink -f )
+do
+  parts=$(mdadm --detail  $array | grep '/dev/' | grep -oE "[^ :]+$")
+  mdadm --stop $array
+  [ -x $array ] && mdadm --remove $array
+  for part in $parts; do
+    echo "zeroing $part"
+    mdadm --zero-superblock $part
+  done 
+done
+rm -f /etc/mdadm/mdadm.conf
+
+# wipe all disks with wipefs and dd
+if [ -n "$disklist" ]; then
+  echo "Wiping boot sector of disks: $disklist"
+  for disk in $disklist; do
+    if echo $disk | grep -q ^md
+    then
+      echo "Skipping RAID device $disk as we've already removed it"
+      continue
+    fi
+    wipefs -a /dev/$disk
+    dd if=/dev/zero of=/dev/$disk bs=512 count=2
+
+    # setup-storage calls parted, and it is upset if there is no disk label.
+    echo "Creating disk label on $disk"
+    parted /dev/$disk mklabel msdos
+  done
+fi
+
+exit $error
+

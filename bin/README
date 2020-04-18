@@ -1,0 +1,12 @@
+You need to place a copy of coreos-installer into this directory.
+
+Checkout the repository here:
+
+git clone https://github.com/coreos/coreos-installer
+
+Build the binary with:
+
+cd core-installer
+RELEASE=1 make
+
+The binary is located in target/release
