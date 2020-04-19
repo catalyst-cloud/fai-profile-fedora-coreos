@@ -1,0 +1,7 @@
+# coreos-installer will actually replace these partitions.
+disk_config sda disklabel:gpt bootable:1
+
+primary  -   384M   -    -
+primary  -   127M   -    -
+primary  -     1M   -    -
+primary  /     1M   ext4 rw
