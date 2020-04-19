@@ -3,13 +3,17 @@ version: 1.0.0
 passwd:
   users:
     - name: puck
-      groups: [ sudo, adm ]
+      groups: [ sudo, adm, docker ]
 storage:
   directories:
     - path: /etc/NetworkManager/system-connections
       mode: 0755
-    - path: /opt
-      mode: 0755
+    - path: /var/docker
+      mode: 0751
+      group:
+        name: docker
+    - path: /var/backup
+      mode: 0750
   files:
     - path: /etc/hostname
       mode: 0422
@@ -37,29 +41,31 @@ storage:
           gateway=2001:db8::1
 systemd:
   units:
-    - name: var-opt-backup1.mount
+    - name: var-backup.mount
       enabled: true
       contents: |
         [Unit]
         Before=local-fs.target
         
         [Mount]
-        What=/dev/disk/by-label/backup1
-        Where=/var/opt/backup1
-        Type=ext4
+        What=/dev/disk/by-label/backup
+        Where=/var/backup
+        Type=xfs
+        Options=defaults
         
         [Install]
         WantedBy=local-fs.target
-    - name: var-opt-ssd1.mount
+    - name: var-docker.mount
       enabled: true
       contents: |
         [Unit]
         Before=local-fs.target
         
         [Mount]
-        What=/dev/disk/by-label/ssd1
-        Where=/var/opt/ssd1
-        Type=ext4
+        What=/dev/disk/by-label/docker
+        Where=/var/docker
+        Type=xfs
+        Options=defaults
         
         [Install]
         WantedBy=local-fs.target
