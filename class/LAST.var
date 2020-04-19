@@ -1,6 +1,3 @@
-# Some of our systems still use the old setup_harddisks.
-USE_SETUP_STORAGE=1
-
 # Some default settings.
 INSTALL_DEVICE=${INSTALL_DEVICE:-'/dev/sda'}
 if [ -z "$IGNITION_FILE" ]; then
