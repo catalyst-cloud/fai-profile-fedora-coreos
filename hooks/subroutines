@@ -1,15 +1,57 @@
 #!/bin/bash
 
-# None of these tasks make sense for CoreOS.
+# Extract the base in the Fedora CoreOS method.
+task_extrbase() {
+    coreos_installer=${coreos_installer:-$FAI/bin/coreos-installer}
 
+    if [ ! -f $coreos_installer ]; then
+        die "ERR: You need to place coreos-installer into $FAI/bin"
+    fi
+
+    if [ -z "$INSTALL_DEVICE" ]; then
+        die "ERR: You need to specify the device to install Fedora CoreOS in INSTALL_DEVICE"
+    fi
+
+    if [ ! -b "$INSTALL_DEVICE" ]; then
+        die "ERR: Can't find install device: $INSTALL_DEVICE"
+    fi
+
+    if [ -z "$IGNITION_FILE" ]; then
+        die "ERR: You need to specify the Ingition file in IGNITION_FILE"
+    fi
+
+    if [ ! -f "$IGNITION_FILE" ]; then
+        die "ERR: Can't find Ignition file: $IGNITION_FILE"
+    fi
+
+    # Fetch the latest stable image by running:
+    #   bin/coreos-installer download
+    # This isn't necessary, but speeds up the process if you're installing
+    # over and over and over.
+    if [ -z "$COREOS_IMAGE" ]; then
+        if compgen -G "$FAI/basefiles/fedora-coreos*xz" > /dev/null; then
+            COREOS_IMAGE=$(ls $FAI/basefiles/fedora-coreos*xz | sort -r | head -1)
+        fi
+    fi
+
+    if [ -n "$COREOS_IMAGE" ]; then
+        if [ ! -f "$COREOS_IMAGE" ]; then
+            die "ERR: Can't find Fedora CoreOS image: $COREOS_IMAGE"
+        else
+            EXTRA="-f $COREOS_IMAGE"
+        fi
+    fi
+
+    $FAI/bin/coreos-installer install $INSTALL_DEVICE --ignition-file $IGNITION_FILE $EXTRA
+}
+
+# We don't want any partitions mounted as coreos-installer uses dd to the
+# device.
 task_mountdisks() {
     echo skip task_mountdisks
 }
 
-task_extrbase() {
-    echo skip task_extrbase
-}
-
+# None of these tasks make sense for CoreOS.
 task_debconf() {
     echo skip task_debconf
 }
@@ -25,4 +67,3 @@ task_updatebase() {
 task_instsoft() {
     echo skip task_instsoft
 }
-
