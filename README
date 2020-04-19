@@ -20,7 +20,7 @@ so by running the following in the basefiles directory of this FAI profile:
 
   cd basefiles && bin/coreos-installer download
 
-Written by Andrew Ruthven from Catalyst Clud Ltd, New Zealand.
+Written by Andrew Ruthven from Catalyst Cloud Ltd, New Zealand.
 Copyright 2020, Catalyst Cloud Ltd.
 
 All files in this repository are under the GPL v3 or later version, except for
