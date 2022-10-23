@@ -18,7 +18,7 @@ There are sample files in etc, class and disk_config for my-servers-hostname.
 You may want to download a local copy of the install image, you can do
 so by running the following in the basefiles directory of this FAI profile:
 
-  cd basefiles && bin/coreos-installer download
+  cd basefiles && ../bin/coreos-installer download
 
 Written by Andrew Ruthven from Catalyst Cloud Ltd, New Zealand.
 Copyright 2020, Catalyst Cloud Ltd.
